@@ -25,7 +25,7 @@ trap 'rm -rf "$staging_dir"' EXIT
 mkdir -p "$staging_dir/Payload"
 ditto "$app_path" "$staging_dir/Payload/Folia.app"
 version="$(node -p "require('./package.json').version")"
-ipa_path="$output_dir/Folia-$version-native-qq-fix1-unsigned.ipa"
+ipa_path="$output_dir/Folia-$version-ios-unsigned.ipa"
 ditto -c -k --sequesterRsrc --keepParent "$staging_dir/Payload" "$ipa_path"
 unzip -t "$ipa_path"
 shasum -a 256 "$ipa_path" > "$ipa_path.sha256"

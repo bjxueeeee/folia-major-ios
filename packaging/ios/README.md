@@ -1,6 +1,6 @@
-# Folia iOS / GitHub Actions
+# Folia iOS 0.7.22 / GitHub Actions
 
-复用原项目 React 前端和 @yakult-green-tea/qq-music-api 3.1.4 的 serverless/MQTT 协议源码。
+复用原项目 React 前端和 @yakult-green-tea/qq-music-api 3.3.3 的 serverless/MQTT 协议源码。
 
 QQ 音乐在 iOS 内运行请求处理器，默认无需另行部署 QQ API。HTTP 请求经 FoliaNetwork 的 URLSession 桥发送，保留原协议需要的 Cookie 和手动重定向；QQ 扫码使用原 MQTT codec，并在应用内持有 WebSocket 连接。微信扫码同样经过原协议。登录加密密钥优先保存在设备 Keychain；侧载签名缺少 Keychain entitlement 时，保存在应用原生私有目录的受保护文件中，不进入 JavaScript 存储或备份。
 
@@ -19,3 +19,9 @@ Actions → Build iOS IPA → Run workflow。构建成功后下载 Folia-iOS-uns
 ## macOS 本地构建
 
 Node 24+、Xcode 26+：npm ci，然后 npm run mobile:build:ipa，输出到 ios/App/output。
+
+## v0.7.22 移植范围
+
+基于上游正式标签 `v0.7.22`（`1f6d0f468f5bc81b23a8b40ad7ca96ccd4b1ecbe`）。合并上游 Web 能力、花火歌词样式、随机样式池及 QQ 播放/会话修复，保留 iOS QQ 网络桥、扫码刷新和侧载密钥存储兼容。汽水音乐等新增桌面专属能力不等同于已移植到 iOS。
+
+原作者仍为 [chthollyphile](https://github.com/chthollyphile)，原项目为 [chthollyphile/folia-major](https://github.com/chthollyphile/folia-major)。本版本在当前账号 [bjxueeeee/folia-major-ios](https://github.com/bjxueeeee/folia-major-ios) 维护，保留原 AGPL-3.0 许可证。

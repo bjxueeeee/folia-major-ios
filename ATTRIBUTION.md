@@ -12,7 +12,7 @@ The original project name, source code, visual design, existing contributors, no
 
 ## iOS port
 
-The iOS wrapper, Capacitor integration, native networking bridge, and iOS build workflow in this repository are maintained by [@bjx-bj](https://github.com/bjx-bj).
+The iOS wrapper, Capacitor integration, native networking bridge, and iOS build workflow in this repository are originally maintained at [@bjx-bj](https://github.com/bjx-bj), with the v0.7.22 update maintained at [@bjxueeeee](https://github.com/bjxueeeee/folia-major-ios).
 
 The iOS port reuses the original React application and the existing @yakult-green-tea/qq-music-api protocol implementation. See packaging/ios/README.md for the iOS scope and known limitations.
 

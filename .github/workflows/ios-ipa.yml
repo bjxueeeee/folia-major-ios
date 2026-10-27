@@ -48,7 +48,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Verify QQ native networking and existing transport
-        run: npm run test:unit -- test/unit/onlineMusic/nativeQqNetwork.test.ts test/unit/onlineMusic/qqTransport.test.ts
+        run: npm run test:unit -- test/unit/onlineMusic/nativeQqNetwork.test.ts test/unit/onlineMusic/qqTransport.test.ts test/unit/onlineMusic/qqSessionRefresh.test.ts test/unit/onlineMusic/qqServerlessClosure.test.ts test/unit/onlineMusic/omniArchitecture.test.ts test/unit/visualizer/randomVisualizerModes.test.ts test/unit/visualizer/hanabi
       - name: Build and sync web assets
         run: npm run mobile:build
       - name: Compile and package unsigned IPA

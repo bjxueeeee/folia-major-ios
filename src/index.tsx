@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer';
-import { installNativeQqNetworking } from './services/nativeQq/network';
+import { installNativeRuntimes } from './services/nativeRuntime';
 import { installGlobalVisualizerFrameRateLimiter } from './utils/frameRateLimiter';
 import { installConsoleLogCapture } from './utils/consoleLogBuffer';
 import { installDebugModule } from './services/debug/debugModule';
@@ -7,7 +7,7 @@ import { installMemorySampleFeed } from './services/debug/memorySamples';
 // import { installCoverSizeAudit } from './services/debug/coverSizeSamples';
 // @ts-ignore
 globalThis.Buffer = Buffer;
-installNativeQqNetworking();
+installNativeRuntimes();
 // First, so the debug overlay's console tab has the startup lines too - they are where a failure
 // to reach a library or restore a session shows up.
 installConsoleLogCapture();
@@ -25,5 +25,3 @@ installMemorySampleFeed();
 installGlobalVisualizerFrameRateLimiter();
 
 void import('./bootstrap');
-void import('./services/nativeQq/probe').then(({ runNativeQqProbe }) => runNativeQqProbe())
-    .catch(error => console.warn('[Native QQ probe]', error));

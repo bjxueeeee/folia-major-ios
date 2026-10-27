@@ -1,21 +1,40 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // test/unit/onlineMusic/nativeQqNetwork.test.ts — 验证原生网络桥保留登录 Cookie、重定向和二进制图像。
-const { plugin } = vi.hoisted(() => ({ plugin: { request: vi.fn(), cancel: vi.fn(), sessionSecret: vi.fn() } }));
+const { nativeHandler, plugin } = vi.hoisted(() => ({ nativeHandler: vi.fn(), plugin: { request: vi.fn(), cancel: vi.fn(), sessionSecret: vi.fn() } }));
 vi.mock('@capacitor/core', () => ({
     registerPlugin: () => plugin,
     Capacitor: { getPlatform: () => 'ios' },
 }));
-import { nativeQqFetch } from '@/services/nativeQq/network';
-import { getQqTransportAvailability, getQqRemoteApiBase } from '@/services/onlineMusic/qqTransport';
+vi.mock('@/services/onlineMusic/qq/native/runtime', () => ({ handleNativeQqRequest: nativeHandler }));
+import { nativeQqFetch } from '@/services/onlineMusic/qq/native/network';
+import { getQqTransportAvailability, getQqRemoteApiBase, requestQq } from '@/services/onlineMusic/qq/qqTransport';
 
 beforeEach(() => vi.clearAllMocks());
+afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 describe('Native QQ source runtime', () => {
     it('enables QQ without a remote backend URL', () => {
         vi.stubEnv('VITE_QQ_API_BASE', '');
         expect(getQqTransportAvailability()).toEqual({ configured: true });
         expect(getQqRemoteApiBase()).toBeNull();
         vi.unstubAllEnvs();
+    });
+    it('routes new POST operations and a stored session to the embedded handler', async () => {
+        const cookie = 'qqmusic_session=opaque-native-token';
+        vi.stubGlobal('localStorage', { getItem: () => cookie });
+        const fetchMock = vi.fn();
+        vi.stubGlobal('fetch', fetchMock);
+        nativeHandler.mockImplementation(async (request: Request) => {
+            expect(request.method).toBe('POST');
+            expect(request.url).toContain('/login/refresh');
+            expect(request.headers.get('X-QQ-Session')).toBe('opaque-native-token');
+            expect(request.url).not.toContain('opaque-native-token');
+            expect(await request.json()).toEqual({ force: false });
+            return Response.json({ code: 200 });
+        });
+        await expect(requestQq('login_refresh', {}, { force: false })).resolves.toEqual({ code: 200 });
+        expect(fetchMock).not.toHaveBeenCalled();
+        expect(nativeHandler).toHaveBeenCalledOnce();
     });
     it('preserves redirect status and each login cookie for the source cookie jar', async () => {
         plugin.request.mockResolvedValue({ status: 302, headers: { location: 'https://y.qq.com/next' }, cookies: ['one=1', 'two=2'], body: '' });
